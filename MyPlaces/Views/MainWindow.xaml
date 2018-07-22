@@ -1,0 +1,20 @@
+﻿<Window x:Class="MyPlaces.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:MyPlaces.Views"
+        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Width="800"
+        Height="450"
+        mc:Ignorable="d"
+        DataContext="{Binding Main,Source={StaticResource Locator}}"
+        Title="MainWindow">
+
+    <Window.Resources>
+        <local:CredentialsProviderConverter x:Key="CredentialsProviderConverter"/>
+    </Window.Resources>
+
+    <m:Map CredentialsProvider="{Binding BingMapsKey,Converter={StaticResource CredentialsProviderConverter}}"/>
+
+</Window>
