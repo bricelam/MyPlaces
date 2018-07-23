@@ -49,6 +49,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModelLocator.cs" />
+    <Compile Include="ViewModels\Handleable.cs" />
+    <Compile Include="Views\MouseEventArgsConverter.cs" />
+    <Compile Include="Views\ViewChangeEndEventArgsConverter.cs" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -114,5 +117,6 @@
       <Name>EFCore</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
