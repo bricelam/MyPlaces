@@ -1,0 +1,4 @@
+[submodule "EFCore"]
+	path = EFCore
+	url = https://github.com/bricelam/EFCore.git
+	branch = nts

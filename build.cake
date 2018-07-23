@@ -19,8 +19,7 @@ Task("Build")
                     ArgumentCustomization = args => args.Append("/nologo")
                 }
                     .SetConfiguration(configuration)
-                    .SetMaxCpuCount(0)
-                }));
+                    .SetMaxCpuCount(0)));
 
 Task("Test")
     .IsDependentOn("Build")
