@@ -33,6 +33,7 @@ namespace MyPlaces.ViewModels
             BingMapsKey = configuraiton["BingMapsKey"];
             AddPushpinCommand = new RelayCommand(() => _drawingContext.AddPoint());
             AddPolylineCommand = new RelayCommand(() => _drawingContext.AddLineString());
+            AddPolygonCommand = new RelayCommand(() => _drawingContext.AddPolygon());
             ViewChangeEndCommand = new RelayCommand<IPolygon>(ViewChangeEnd);
             MouseMoveCommand = new RelayCommand<(IPoint position, Handleable handleable)>(
                 x => MouseMove(x.position));
@@ -46,6 +47,7 @@ namespace MyPlaces.ViewModels
 
         public ICommand AddPushpinCommand { get; set; }
         public ICommand AddPolylineCommand { get; set; }
+        public ICommand AddPolygonCommand { get; set; }
         public ICommand ViewChangeEndCommand { get; }
         public ICommand MouseMoveCommand { get; }
         public ICommand MouseDoubleClickCommand { get; }
@@ -76,6 +78,22 @@ namespace MyPlaces.ViewModels
                     mapPolyline.Locations.Add(ToLocation(coordinate));
                 }
                 Children.Add(mapPolyline);
+            }
+            else if (geometry is IPolygon polygon)
+            {
+                var mapPolygon = new MapPolygon
+                {
+                    Fill = Brushes.Blue,
+                    Stroke = Brushes.Green,
+                    StrokeThickness = 5,
+                    Opacity = 0.7,
+                    Locations = new LocationCollection()
+                };
+                for (var i = 0; i < polygon.Coordinates.Length - 1; i++)
+                {
+                    mapPolygon.Locations.Add(ToLocation(polygon.Coordinates[i]));
+                }
+                Children.Add(mapPolygon);
             }
         }
 

@@ -4,12 +4,12 @@ using NetTopologySuite.Geometries;
 
 namespace MyPlaces.Drawing
 {
-    class ContinueLineStringState : DrawingState
+    class ContinuePolygonState : DrawingState
     {
         readonly DrawingContext _context;
         IGeometry _baseGeometry;
 
-        public ContinueLineStringState(DrawingContext context, IGeometry baseGeometry)
+        public ContinuePolygonState(DrawingContext context, IGeometry baseGeometry)
         {
             _context = context;
             _baseGeometry = baseGeometry;
@@ -30,12 +30,13 @@ namespace MyPlaces.Drawing
 
         IGeometry UpdateGeometry(IPoint endPoint)
         {
-            var baseLength = _baseGeometry.Coordinates.Length;
+            int baseLength = _baseGeometry.Coordinates.Length;
             var points = new Coordinate[baseLength + 1];
-            Array.Copy(_baseGeometry.Coordinates, points, baseLength);
-            points[baseLength] = endPoint.Coordinate;
+            Array.Copy(_baseGeometry.Coordinates, points, baseLength - 1);
+            points[baseLength - 1] = endPoint.Coordinate;
+            points[baseLength] = _baseGeometry.Coordinates[baseLength - 1];
 
-            return _context.ActiveGeometry = new LineString(points);
+            return _context.ActiveGeometry = new Polygon(new LinearRing(points));
         }
     }
 }

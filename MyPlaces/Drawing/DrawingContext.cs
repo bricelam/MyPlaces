@@ -39,6 +39,12 @@ namespace MyPlaces.Drawing
             ActiveGeometry = null;
         }
 
+        public void AddPolygon()
+        {
+            State = new StartPolygonState(this);
+            ActiveGeometry = null;
+        }
+
         public void MouseMove(IPoint position)
             => State.MouseMove(position);
 

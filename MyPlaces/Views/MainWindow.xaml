@@ -31,6 +31,7 @@
         <StackPanel Grid.Column="1" Orientation="Horizontal">
             <Button Command="{Binding AddPushpinCommand}">Add pushpin</Button>
             <Button Command="{Binding AddPolylineCommand}">Add polyline</Button>
+            <Button Command="{Binding AddPolygonCommand}">Add polygon</Button>
         </StackPanel>
         <m:Map Grid.Row="1"
                Grid.Column="1"

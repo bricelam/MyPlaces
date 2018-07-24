@@ -51,9 +51,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Drawing\AddPointState.cs" />
+    <Compile Include="Drawing\ContinuePolygonState.cs" />
     <Compile Include="Drawing\ContinueLineStringState.cs" />
     <Compile Include="Drawing\GeometryDrawnEventArgs.cs" />
+    <Compile Include="Drawing\SecondPolygonState.cs" />
     <Compile Include="Drawing\StartLineStringState.cs" />
+    <Compile Include="Drawing\StartPolygonState.cs" />
+    <Compile Include="Drawing\ThirdPolygonState.cs" />
     <Compile Include="Models\PlaceContext.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\PlaceCollection.cs" />
@@ -63,6 +67,7 @@
     <Compile Include="ViewModels\Handleable.cs" />
     <Compile Include="Drawing\DrawingState.cs" />
     <Compile Include="Views\MouseEventArgsConverter.cs" />
+    <Compile Include="Views\User32.cs" />
     <Compile Include="Views\ViewChangeEndEventArgsConverter.cs" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
