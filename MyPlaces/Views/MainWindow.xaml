@@ -17,7 +17,6 @@
         <local:CredentialsProviderConverter x:Key="CredentialsProviderConverter"/>
         <local:ViewChangeEndEventArgsConverter x:Key="ViewChangeEndEventArgsConverter"/>
         <local:MouseEventArgsConverter x:Key="MouseEventArgsConverter"/>
-        <local:LocationConverter x:Key="LocationConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -29,14 +28,20 @@
             <ColumnDefinition Width="300"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Button Command="{Binding AddPushpinCommand}">Add pushpin</Button>
+            <Button Command="{Binding AddPolylineCommand}">Add polyline</Button>
+        </StackPanel>
         <m:Map Grid.Row="1"
                Grid.Column="1"
-               Center="{Binding Center,Converter={StaticResource LocationConverter}}"
+               Center="39.828175,-98.5795"
                CredentialsProvider="{Binding BingMapsKey,Converter={StaticResource CredentialsProviderConverter}}"
                Mode="AerialWithLabels"
                Name="_map"
                ScaleVisibility="Collapsed"
-               ZoomLevel="4">
+               ZoomLevel="4"
+               MouseLeftButtonDown="HandleMouseLeftButtonDownOnMap"
+               MouseLeftButtonUp="HandleMouseLeftButtonUpOnMap">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="ViewChangeEnd">
                     <command:EventToCommand Command="{Binding ViewChangeEndCommand}"
@@ -56,19 +61,8 @@
                                             EventArgsConverterParameter="{Binding ElementName=_map}"
                                             PassEventArgsToCommand="True"/>
                 </i:EventTrigger>
-                <i:EventTrigger EventName="MouseLeftButtonUp">
-                    <command:EventToCommand Command="{Binding MouseLeftButtonUpCommand}"
-                                            EventArgsConverter="{StaticResource MouseEventArgsConverter}"
-                                            EventArgsConverterParameter="{Binding ElementName=_map}"
-                                            PassEventArgsToCommand="True"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="MouseLeftButtonDown">
-                    <command:EventToCommand Command="{Binding MouseLeftButtonDownCommand}"
-                                            EventArgsConverter="{StaticResource MouseEventArgsConverter}"
-                                            EventArgsConverterParameter="{Binding ElementName=_map}"
-                                            PassEventArgsToCommand="True"/>
-                </i:EventTrigger>
             </i:Interaction.Triggers>
+            <m:MapItemsControl ItemsSource="{Binding Children}"/>
         </m:Map>
     </Grid>
 

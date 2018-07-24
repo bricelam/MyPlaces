@@ -17,7 +17,7 @@ namespace MyPlaces.Views
 
             return ((IPoint, Handleable))(
                 new Point(location.Longitude, location.Latitude),
-                new Handleable(() => e.Handled = true));
+                new Handleable(() => e.Handled, x => e.Handled = x));
         }
     }
 }

@@ -38,6 +38,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Device" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -49,9 +50,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Drawing\AddPointState.cs" />
+    <Compile Include="Drawing\ContinueLineStringState.cs" />
+    <Compile Include="Drawing\GeometryDrawnEventArgs.cs" />
+    <Compile Include="Drawing\StartLineStringState.cs" />
+    <Compile Include="Models\PlaceContext.cs" />
+    <Compile Include="Models\Place.cs" />
+    <Compile Include="Models\PlaceCollection.cs" />
     <Compile Include="ViewModelLocator.cs" />
+    <Compile Include="Drawing\BrowseState.cs" />
+    <Compile Include="Drawing\DrawingContext.cs" />
     <Compile Include="ViewModels\Handleable.cs" />
-    <Compile Include="Views\LocationConverter.cs" />
+    <Compile Include="Drawing\DrawingState.cs" />
     <Compile Include="Views\MouseEventArgsConverter.cs" />
     <Compile Include="Views\ViewChangeEndEventArgsConverter.cs" />
     <Page Include="Views\MainWindow.xaml">

@@ -4,12 +4,19 @@ namespace MyPlaces.ViewModels
 {
     class Handleable
     {
-        readonly Action _action;
+        readonly Func<bool> _get;
+        readonly Action<bool> _set;
 
-        public Handleable(Action action)
-            => _action = action;
+        public Handleable(Func<bool> get, Action<bool> set)
+        {
+            _get = get;
+            _set = set;
+        }
 
-        public void Handle()
-            => _action();
+        public bool Handled
+        {
+            get => _get();
+            set => _set(value);
+        }
     }
 }

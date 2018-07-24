@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyPlaces.Models;
 using MyPlaces.ViewModels;
 
 namespace MyPlaces
@@ -10,11 +13,21 @@ namespace MyPlaces
 
         static ViewModelLocator()
         {
+            var configuration = new ConfigurationBuilder()
+                .AddUserSecrets<ViewModelLocator>()
+                .Build();
+
+            var connectionString = new SqliteConnectionStringBuilder
+            {
+                // TODO: AppData?
+                DataSource = "MyPlaces.db",
+                Cache = SqliteCacheMode.Shared
+            }.ToString();
+
             _services = new ServiceCollection()
-                .AddSingleton<IConfiguration>(
-                    new ConfigurationBuilder()
-                        .AddUserSecrets<ViewModelLocator>()
-                        .Build())
+                .AddSingleton<IConfiguration>(configuration)
+                .AddDbContext<PlaceContext>(
+                    x => x.UseSqlite(connectionString))
                 .AddSingleton<MainViewModel>()
                 .BuildServiceProvider(validateScopes: true);
         }
