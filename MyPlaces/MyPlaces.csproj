@@ -38,6 +38,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -50,6 +51,7 @@
     </ApplicationDefinition>
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\Handleable.cs" />
+    <Compile Include="Views\LocationConverter.cs" />
     <Compile Include="Views\MouseEventArgsConverter.cs" />
     <Compile Include="Views\ViewChangeEndEventArgsConverter.cs" />
     <Page Include="Views\MainWindow.xaml">

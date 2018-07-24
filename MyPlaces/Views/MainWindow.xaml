@@ -17,6 +17,7 @@
         <local:CredentialsProviderConverter x:Key="CredentialsProviderConverter"/>
         <local:ViewChangeEndEventArgsConverter x:Key="ViewChangeEndEventArgsConverter"/>
         <local:MouseEventArgsConverter x:Key="MouseEventArgsConverter"/>
+        <local:LocationConverter x:Key="LocationConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -30,9 +31,12 @@
         </Grid.ColumnDefinitions>
         <m:Map Grid.Row="1"
                Grid.Column="1"
+               Center="{Binding Center,Converter={StaticResource LocationConverter}}"
                CredentialsProvider="{Binding BingMapsKey,Converter={StaticResource CredentialsProviderConverter}}"
+               Mode="AerialWithLabels"
                Name="_map"
-               ScaleVisibility="Collapsed">
+               ScaleVisibility="Collapsed"
+               ZoomLevel="4">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="ViewChangeEnd">
                     <command:EventToCommand Command="{Binding ViewChangeEndCommand}"
