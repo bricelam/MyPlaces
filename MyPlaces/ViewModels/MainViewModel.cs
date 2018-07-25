@@ -1,34 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GeoAPI.Geometries;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Maps.MapControl.WPF;
 using MyPlaces.Drawing;
-using Location = Microsoft.Maps.MapControl.WPF.Location;
 
 namespace MyPlaces.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
-        MapDrawingContext _drawingContext;
-        ICollection<IGeometry> _geometries = new List<IGeometry>();
+        readonly MapDrawingContext _drawingContext;
 
         public MainViewModel(IConfiguration configuraiton)
         {
             _drawingContext = new MapDrawingContext();
             _drawingContext.PropertyChanged += (sender, e) =>
             {
-                Debug.Assert(e.PropertyName == nameof(MapDrawingContext.ActiveGeometry));
-
-                RebuildChildren();
+                if (e.PropertyName == nameof(MapDrawingContext.ActiveGeometry))
+                    RaisePropertyChanged(nameof(ActiveGeometry));
             };
-            _drawingContext.GeometryDrawn += (sender, e) => AddGeometry(e.Geometry);
+            _drawingContext.GeometryDrawn += (sender, e) => Children.Add(e.Geometry);
 
             BingMapsKey = configuraiton["BingMapsKey"];
             BrowseCommand = new RelayCommand(() => _drawingContext.Browse());
@@ -44,9 +36,13 @@ namespace MyPlaces.ViewModels
         }
 
         public string BingMapsKey { get; }
+        public ObservableCollection<IGeometry> Children { get; } = new ObservableCollection<IGeometry>();
 
-        // TODO: Remove. Use model
-        public ObservableCollection<FrameworkElement> Children { get; } = new ObservableCollection<FrameworkElement>();
+        public IGeometry ActiveGeometry
+        {
+            get => _drawingContext.ActiveGeometry;
+            set => _drawingContext.ActiveGeometry = value;
+        }
 
         public ICommand BrowseCommand { get; set; }
         public ICommand AddPushpinCommand { get; set; }
@@ -56,54 +52,6 @@ namespace MyPlaces.ViewModels
         public ICommand MouseMoveCommand { get; }
         public ICommand MouseDoubleClickCommand { get; }
         public ICommand MouseClickCommand { get; }
-
-        public void AddGeometry(IGeometry geometry, bool save = true)
-        {
-            if (save)
-            {
-                _geometries.Add(geometry);
-            }
-
-            // TODO: Handle in view
-            if (geometry is IPoint point)
-            {
-                Children.Add(new Pushpin { Location = ToLocation(point.Coordinate) });
-            }
-            else if (geometry is ILineString lineString)
-            {
-                var mapPolyline = new MapPolyline
-                {
-                    Stroke = Brushes.Blue,
-                    StrokeThickness = 5,
-                    Opacity = 0.7,
-                    Locations = new LocationCollection()
-                };
-                foreach (var coordinate in lineString.Coordinates)
-                {
-                    mapPolyline.Locations.Add(ToLocation(coordinate));
-                }
-                Children.Add(mapPolyline);
-            }
-            else if (geometry is IPolygon polygon)
-            {
-                var mapPolygon = new MapPolygon
-                {
-                    Fill = Brushes.Blue,
-                    Stroke = Brushes.Green,
-                    StrokeThickness = 5,
-                    Opacity = 0.7,
-                    Locations = new LocationCollection()
-                };
-                for (var i = 0; i < polygon.Coordinates.Length - 1; i++)
-                {
-                    mapPolygon.Locations.Add(ToLocation(polygon.Coordinates[i]));
-                }
-                Children.Add(mapPolygon);
-            }
-        }
-
-        Location ToLocation(Coordinate coordinate)
-            => new Location(coordinate.Y, coordinate.X);
 
         void ViewChangeEnd(IPolygon boundingRectangle)
         {
@@ -118,18 +66,5 @@ namespace MyPlaces.ViewModels
 
         void MouseDoubleClick(Coordinate position, Handleable handleable)
             => handleable.Handled = _drawingContext.MouseDoubleClick(position);
-
-        void RebuildChildren()
-        {
-            Children.Clear();
-            foreach (var geometry in _geometries)
-            {
-                AddGeometry(geometry, false);
-            }
-            if (_drawingContext.ActiveGeometry != null)
-            {
-                AddGeometry(_drawingContext.ActiveGeometry, false);
-            }
-        }
     }
 }

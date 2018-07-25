@@ -65,7 +65,11 @@
     <Compile Include="Drawing\MapDrawingContext.cs" />
     <Compile Include="ViewModels\Handleable.cs" />
     <Compile Include="Drawing\DrawingState.cs" />
+    <Compile Include="Views\LocationCollectionConverter.cs" />
+    <Compile Include="Views\LocationConverter.cs" />
+    <Compile Include="MapControl\MapPolygon2.cs" />
     <Compile Include="Views\MouseEventArgsConverter.cs" />
+    <Compile Include="MapControl\MapPolyline2.cs" />
     <Compile Include="Views\User32.cs" />
     <Compile Include="Views\ViewChangeEndEventArgsConverter.cs" />
     <Page Include="Views\MainWindow.xaml">

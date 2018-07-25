@@ -6,7 +6,9 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:MyPlaces.Views"
         xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:m2="clr-namespace:MyPlaces.MapControl"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:nts="clr-namespace:NetTopologySuite.Geometries;assembly=NetTopologySuite"
         Width="1280"
         Height="720"
         mc:Ignorable="d"
@@ -17,6 +19,8 @@
         <local:CredentialsProviderConverter x:Key="CredentialsProviderConverter"/>
         <local:ViewChangeEndEventArgsConverter x:Key="ViewChangeEndEventArgsConverter"/>
         <local:MouseEventArgsConverter x:Key="MouseEventArgsConverter"/>
+        <local:LocationConverter x:Key="LocationConverter"/>
+        <local:LocationCollectionConverter x:Key="LocationCollectionConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -39,13 +43,31 @@
                Center="39.828175,-98.5795"
                CredentialsProvider="{Binding BingMapsKey,Converter={StaticResource CredentialsProviderConverter}}"
                Mode="AerialWithLabels"
-               MouseLeftButtonDown="HandleMouseLeftButtonDownOnMap"
-               MouseMove="HandleMouseMoveOnMap"
-               MouseLeftButtonUp="HandleMouseLeftButtonUpOnMap"
                MouseDoubleClick="HandleMouseDoubleClickOnMap"
+               MouseLeftButtonDown="HandleMouseLeftButtonDownOnMap"
+               MouseLeftButtonUp="HandleMouseLeftButtonUpOnMap"
+               MouseMove="HandleMouseMoveOnMap"
                Name="_map"
                ScaleVisibility="Collapsed"
                ZoomLevel="4">
+            <m:Map.Resources>
+                <DataTemplate DataType="{x:Type nts:Point}">
+                    <m:Pushpin Location="{Binding Coordinate,Converter={StaticResource LocationConverter}}"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type nts:LineString}">
+                    <m2:MapPolyline2 Locations2="{Binding Coordinates,Converter={StaticResource LocationCollectionConverter}}"
+                                     Opacity="0.7"
+                                     Stroke="Blue"
+                                     StrokeThickness="5"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type nts:Polygon}">
+                    <m2:MapPolygon2 Fill="Blue"
+                                    Locations2="{Binding Coordinates,Converter={StaticResource LocationCollectionConverter},ConverterParameter=SkipLast}"
+                                    Opacity="0.7"
+                                    Stroke="Green"
+                                    StrokeThickness="5"/>
+                </DataTemplate>
+            </m:Map.Resources>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="ViewChangeEnd">
                     <command:EventToCommand Command="{Binding ViewChangeEndCommand}"
@@ -67,6 +89,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <m:MapItemsControl ItemsSource="{Binding Children}"/>
+            <ContentPresenter Content="{Binding ActiveGeometry}"/>
         </m:Map>
     </Grid>
 
