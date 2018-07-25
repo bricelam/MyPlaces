@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight.Command;
 using GeoAPI.Geometries;
 using Microsoft.Maps.MapControl.WPF;
 using MyPlaces.ViewModels;
-using NetTopologySuite.Geometries;
 
 namespace MyPlaces.Views
 {
@@ -15,8 +14,7 @@ namespace MyPlaces.Views
             var map = ((Map)parameter);
             var location = map.ViewportPointToLocation(e.GetPosition(map));
 
-            return ((IPoint, Handleable))(
-                new Point(location.Longitude, location.Latitude),
+            return (new Coordinate(location.Longitude, location.Latitude),
                 new Handleable(() => e.Handled, x => e.Handled = x));
         }
     }

@@ -9,42 +9,46 @@ using GalaSoft.MvvmLight.Command;
 using GeoAPI.Geometries;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Maps.MapControl.WPF;
-using DrawingContext = MyPlaces.Drawing.DrawingContext;
+using MyPlaces.Drawing;
 using Location = Microsoft.Maps.MapControl.WPF.Location;
 
 namespace MyPlaces.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
-        DrawingContext _drawingContext;
+        MapDrawingContext _drawingContext;
         ICollection<IGeometry> _geometries = new List<IGeometry>();
 
         public MainViewModel(IConfiguration configuraiton)
         {
-            _drawingContext = new DrawingContext();
+            _drawingContext = new MapDrawingContext();
             _drawingContext.PropertyChanged += (sender, e) =>
             {
-                Debug.Assert(e.PropertyName == nameof(DrawingContext.ActiveGeometry));
+                Debug.Assert(e.PropertyName == nameof(MapDrawingContext.ActiveGeometry));
 
                 RebuildChildren();
             };
             _drawingContext.GeometryDrawn += (sender, e) => AddGeometry(e.Geometry);
 
             BingMapsKey = configuraiton["BingMapsKey"];
+            BrowseCommand = new RelayCommand(() => _drawingContext.Browse());
             AddPushpinCommand = new RelayCommand(() => _drawingContext.AddPoint());
             AddPolylineCommand = new RelayCommand(() => _drawingContext.AddLineString());
             AddPolygonCommand = new RelayCommand(() => _drawingContext.AddPolygon());
             ViewChangeEndCommand = new RelayCommand<IPolygon>(ViewChangeEnd);
-            MouseMoveCommand = new RelayCommand<(IPoint position, Handleable handleable)>(
+            MouseMoveCommand = new RelayCommand<(Coordinate position, Handleable handleable)>(
                 x => MouseMove(x.position));
-            MouseDoubleClickCommand = new RelayCommand<(IPoint position, Handleable handleable)>(
+            MouseDoubleClickCommand = new RelayCommand<(Coordinate position, Handleable handleable)>(
                 x => MouseDoubleClick(x.position, x.handleable));
-            MouseClickCommand = new RelayCommand<IPoint>(MouseClick);
+            MouseClickCommand = new RelayCommand<Coordinate>(MouseClick);
         }
 
         public string BingMapsKey { get; }
+
+        // TODO: Remove. Use model
         public ObservableCollection<FrameworkElement> Children { get; } = new ObservableCollection<FrameworkElement>();
 
+        public ICommand BrowseCommand { get; set; }
         public ICommand AddPushpinCommand { get; set; }
         public ICommand AddPolylineCommand { get; set; }
         public ICommand AddPolygonCommand { get; set; }
@@ -60,6 +64,7 @@ namespace MyPlaces.ViewModels
                 _geometries.Add(geometry);
             }
 
+            // TODO: Handle in view
             if (geometry is IPoint point)
             {
                 Children.Add(new Pushpin { Location = ToLocation(point.Coordinate) });
@@ -105,13 +110,13 @@ namespace MyPlaces.ViewModels
             // TODO: Re-query for items
         }
 
-        void MouseMove(IPoint position)
+        void MouseMove(Coordinate position)
             => _drawingContext.MouseMove(position);
 
-        void MouseClick(IPoint position)
+        void MouseClick(Coordinate position)
             => _drawingContext.MouseClick(position);
 
-        void MouseDoubleClick(IPoint position, Handleable handleable)
+        void MouseDoubleClick(Coordinate position, Handleable handleable)
             => handleable.Handled = _drawingContext.MouseDoubleClick(position);
 
         void RebuildChildren()

@@ -29,6 +29,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Button Command="{Binding BrowseCommand}">Browse</Button>
             <Button Command="{Binding AddPushpinCommand}">Add pushpin</Button>
             <Button Command="{Binding AddPolylineCommand}">Add polyline</Button>
             <Button Command="{Binding AddPolygonCommand}">Add polygon</Button>
@@ -38,11 +39,13 @@
                Center="39.828175,-98.5795"
                CredentialsProvider="{Binding BingMapsKey,Converter={StaticResource CredentialsProviderConverter}}"
                Mode="AerialWithLabels"
+               MouseLeftButtonDown="HandleMouseLeftButtonDownOnMap"
+               MouseMove="HandleMouseMoveOnMap"
+               MouseLeftButtonUp="HandleMouseLeftButtonUpOnMap"
+               MouseDoubleClick="HandleMouseDoubleClickOnMap"
                Name="_map"
                ScaleVisibility="Collapsed"
-               ZoomLevel="4"
-               MouseLeftButtonDown="HandleMouseLeftButtonDownOnMap"
-               MouseLeftButtonUp="HandleMouseLeftButtonUpOnMap">
+               ZoomLevel="4">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="ViewChangeEnd">
                     <command:EventToCommand Command="{Binding ViewChangeEndCommand}"

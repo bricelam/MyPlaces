@@ -39,7 +39,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Device" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -63,7 +62,7 @@
     <Compile Include="Models\PlaceCollection.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="Drawing\BrowseState.cs" />
-    <Compile Include="Drawing\DrawingContext.cs" />
+    <Compile Include="Drawing\MapDrawingContext.cs" />
     <Compile Include="ViewModels\Handleable.cs" />
     <Compile Include="Drawing\DrawingState.cs" />
     <Compile Include="Views\MouseEventArgsConverter.cs" />

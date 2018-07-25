@@ -4,15 +4,15 @@ namespace MyPlaces.Drawing
 {
     abstract class DrawingState
     {
-        public virtual void MouseMove(IPoint position)
+        public virtual void MouseMove(Coordinate position)
         {
         }
 
-        public virtual void MouseClick(IPoint position)
+        public virtual void MouseClick(Coordinate position)
         {
         }
 
-        public virtual bool MouseDoubleClick(IPoint position)
+        public virtual bool MouseDoubleClick(Coordinate position)
             => false;
     }
 }

@@ -4,12 +4,12 @@ namespace MyPlaces.Drawing
 {
     class StartPolygonState : DrawingState
     {
-        readonly DrawingContext _context;
+        readonly MapDrawingContext _context;
 
-        public StartPolygonState(DrawingContext context)
+        public StartPolygonState(MapDrawingContext context)
             => _context = context;
 
-        public override void MouseClick(IPoint position)
+        public override void MouseClick(Coordinate position)
             => _context.State = new SecondPolygonState(_context, position);
     }
 }

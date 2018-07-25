@@ -4,13 +4,11 @@ using GeoAPI.Geometries;
 
 namespace MyPlaces.Drawing
 {
-    class DrawingContext : ObservableObject
+    class MapDrawingContext : ObservableObject
     {
-        static readonly DrawingState _browseState = new BrowseState();
-
         IGeometry _activeGeometry;
 
-        public DrawingState State { get; set; } = _browseState;
+        public DrawingState State { get; set; } = new BrowseState();
 
         public IGeometry ActiveGeometry
         {
@@ -20,38 +18,45 @@ namespace MyPlaces.Drawing
 
         public event EventHandler<GeometryDrawnEventArgs> GeometryDrawn;
 
-        public void End(IGeometry geometry)
+        public void Browse()
         {
-            OnGeometryDrawn(new GeometryDrawnEventArgs(geometry));
-            State = _browseState;
             ActiveGeometry = null;
+            State = new BrowseState();
         }
 
         public void AddPoint()
         {
-            State = new AddPointState(this);
             ActiveGeometry = null;
+            State = new AddPointState(this);
         }
 
         public void AddLineString()
         {
-            State = new StartLineStringState(this);
             ActiveGeometry = null;
+            State = new StartLineStringState(this);
         }
 
         public void AddPolygon()
         {
-            State = new StartPolygonState(this);
             ActiveGeometry = null;
+            State = new StartPolygonState(this);
         }
 
-        public void MouseMove(IPoint position)
+        public MapDrawingContext End(IGeometry geometry)
+        {
+            ActiveGeometry = null;
+            OnGeometryDrawn(new GeometryDrawnEventArgs(geometry));
+
+            return this;
+        }
+
+        public void MouseMove(Coordinate position)
             => State.MouseMove(position);
 
-        public void MouseClick(IPoint position)
+        public void MouseClick(Coordinate position)
             => State.MouseClick(position);
 
-        public bool MouseDoubleClick(IPoint position)
+        public bool MouseDoubleClick(Coordinate position)
             => State.MouseDoubleClick(position);
 
         private void OnGeometryDrawn(GeometryDrawnEventArgs e)

@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using GeoAPI.Geometries;
 using MyPlaces.ViewModels;
-using NTSPoint = NetTopologySuite.Geometries.Point;
 
 namespace MyPlaces.Views
 {
@@ -12,16 +12,14 @@ namespace MyPlaces.Views
         Point _mouseDownAt;
         bool _waitingForMouseUp;
         Timer _waitForDoubleClick;
-        bool _waitingForDoubleClick;
 
         public MainWindow()
         {
             InitializeComponent();
             Closing += (sender, e) => ViewModelLocator.Cleanup();
-            _map.MouseMove += HandleMouseMoveOnMap;
         }
 
-        MainViewModel ViewModel
+        MainViewModel Vm
             => (MainViewModel)DataContext;
 
         void HandleMouseLeftButtonDownOnMap(object sender, MouseButtonEventArgs e)
@@ -32,18 +30,21 @@ namespace MyPlaces.Views
 
         void HandleMouseMoveOnMap(object sender, MouseEventArgs e)
         {
-            if (!(_waitingForMouseUp || _waitingForDoubleClick))
+            if (!_waitingForMouseUp && _waitForDoubleClick == null)
                 return;
 
             var position = e.GetPosition((IInputElement)sender);
             if (Math.Abs(_mouseDownAt.X - position.X) > User32.GetSystemMetrics(User32.SM_CXDOUBLECLK)
                 || Math.Abs(_mouseDownAt.Y - position.Y) > User32.GetSystemMetrics(User32.SM_CYDOUBLECLK))
             {
-                _waitingForMouseUp = false;
-
-                if (_waitingForDoubleClick)
+                if (_waitForDoubleClick == null)
                 {
                     HandleSingleClickOnMap();
+                }
+
+                if (_waitingForMouseUp)
+                {
+                    _waitingForMouseUp = false;
                 }
             }
         }
@@ -53,37 +54,41 @@ namespace MyPlaces.Views
             if (!_waitingForMouseUp)
                 return;
 
-            _waitingForMouseUp = false;
-
-            if (_waitingForDoubleClick)
+            if (_waitForDoubleClick == null)
             {
-                ClearWaitForDoubleClick();
-
-                return;
+                _waitForDoubleClick = new Timer(
+                    _ => Dispatcher.Invoke(HandleSingleClickOnMap),
+                    null,
+                    User32.GetDoubleClickTime(),
+                    Timeout.Infinite);
             }
 
-            _waitForDoubleClick = new Timer(
-                _ => Dispatcher.BeginInvoke((Action)HandleSingleClickOnMap),
-                null,
-                User32.GetDoubleClickTime(),
-                Timeout.Infinite);
-            _waitingForDoubleClick = true;
+            _waitingForMouseUp = false;
+        }
+
+        private void HandleMouseDoubleClickOnMap(object sender, MouseButtonEventArgs e)
+        {
+            if (_waitForDoubleClick != null)
+            {
+                ClearWaitForDoubleClick();
+            }
         }
 
         void ClearWaitForDoubleClick()
         {
-            _waitingForDoubleClick = false;
             _waitForDoubleClick.Dispose();
             _waitForDoubleClick = null;
         }
 
         void HandleSingleClickOnMap()
         {
+            if (_waitForDoubleClick == null)
+                return;
+
             ClearWaitForDoubleClick();
 
             var location = _map.ViewportPointToLocation(_mouseDownAt);
-
-            ViewModel.MouseClickCommand.Execute(new NTSPoint(location.Longitude, location.Latitude));
+            Vm.MouseClickCommand.Execute(new Coordinate(location.Longitude, location.Latitude));
         }
     }
 }

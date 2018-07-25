@@ -1,15 +1,18 @@
 ﻿using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 namespace MyPlaces.Drawing
 {
     class AddPointState : DrawingState
     {
-        readonly DrawingContext _context;
+        readonly MapDrawingContext _context;
 
-        public AddPointState(DrawingContext context)
+        public AddPointState(MapDrawingContext context)
             => _context = context;
 
-        public override void MouseClick(IPoint position)
-            => _context.End(position);
+        public override void MouseClick(Coordinate position)
+            => _context
+                .End(new Point(position))
+                .AddPoint();
     }
 }

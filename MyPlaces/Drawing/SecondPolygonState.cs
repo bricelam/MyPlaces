@@ -5,22 +5,22 @@ namespace MyPlaces.Drawing
 {
     class SecondPolygonState : DrawingState
     {
-        readonly DrawingContext _context;
-        readonly IGeometry _startpoint;
+        readonly MapDrawingContext _context;
+        readonly Coordinate _startpoint;
 
-        public SecondPolygonState(DrawingContext context, IGeometry startPoint)
+        public SecondPolygonState(MapDrawingContext context, Coordinate startPoint)
         {
             _context = context;
             _startpoint = startPoint;
         }
 
-        public override void MouseMove(IPoint position)
+        public override void MouseMove(Coordinate position)
             => UpdateGeometry(position);
 
-        public override void MouseClick(IPoint position)
+        public override void MouseClick(Coordinate position)
             => _context.State = new ThirdPolygonState(_context, UpdateGeometry(position));
 
-        IGeometry UpdateGeometry(IPoint secondPoint)
-            => _context.ActiveGeometry = new LineString(new[] { _startpoint.Coordinate, secondPoint.Coordinate });
+        IGeometry UpdateGeometry(Coordinate secondPoint)
+            => _context.ActiveGeometry = new LineString(new[] { _startpoint, secondPoint });
     }
 }

@@ -10,5 +10,6 @@ namespace MyPlaces.Models
         }
 
         public DbSet<PlaceCollection> Collections { get; set; }
+        public DbSet<Place> Places { get; set; }
     }
 }
