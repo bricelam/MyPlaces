@@ -20,6 +20,14 @@ namespace MyPlaces.Drawing
         public override void MouseClick(Coordinate position)
             => _context.State = new ThirdPolygonState(_context, UpdateGeometry(position));
 
+        public override bool MouseDoubleClick(Coordinate position)
+        {
+            // NB: Reverts the last single-click
+            _context.State = new StartPolygonState(_context);
+
+            return false;
+        }
+
         IGeometry UpdateGeometry(Coordinate secondPoint)
             => _context.ActiveGeometry = new LineString(new[] { _startpoint, secondPoint });
     }

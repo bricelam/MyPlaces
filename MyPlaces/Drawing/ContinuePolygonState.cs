@@ -23,22 +23,23 @@ namespace MyPlaces.Drawing
 
         public override bool MouseDoubleClick(Coordinate position)
         {
-            // NOTE: The view cancels single-click events when double-clicking. Alternatively, the single-click effects
-            //       could be reverted here by removing the last point
+            // NB: Reverts the last single-click
             _context
-                .End(UpdateGeometry(position))
+                .End(UpdateGeometry(position, skipLast: true))
                 .AddPolygon();
 
             return true;
         }
 
-        IGeometry UpdateGeometry(Coordinate endPoint)
+        IGeometry UpdateGeometry(Coordinate endPoint, bool skipLast = false)
         {
             int baseLength = _baseGeometry.Coordinates.Length;
+            if (skipLast)
+                baseLength--;
             var points = new Coordinate[baseLength + 1];
             Array.Copy(_baseGeometry.Coordinates, points, baseLength - 1);
             points[baseLength - 1] = endPoint;
-            points[baseLength] = _baseGeometry.Coordinates[baseLength - 1];
+            points[baseLength] = _baseGeometry.Coordinates[0];
 
             return _context.ActiveGeometry = new Polygon(new LinearRing(points));
         }

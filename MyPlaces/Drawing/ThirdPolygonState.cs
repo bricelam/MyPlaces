@@ -22,13 +22,10 @@ namespace MyPlaces.Drawing
 
         public override bool MouseDoubleClick(Coordinate position)
         {
-            // NOTE: The view cancels single-click events when double-clicking. Alternatively, the single-click effects
-            //       could be reverted here by removing the last point
-            _context
-                .End(UpdateGeometry(position))
-                .AddPolygon();
+            // NB: Reverts the last single-click
+            _context.State = new SecondPolygonState(_context, _firstSegment.Coordinates[0]);
 
-            return true;
+            return false;
         }
 
         IGeometry UpdateGeometry(Coordinate thirdPoint)
