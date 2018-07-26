@@ -13,7 +13,7 @@
         Height="720"
         mc:Ignorable="d"
         DataContext="{Binding Main,Source={StaticResource Locator}}"
-        Title="MainWindow">
+        Title="My Places">
 
     <Window.Resources>
         <local:CredentialsProviderConverter x:Key="CredentialsProviderConverter"/>
@@ -25,18 +25,28 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="1" Orientation="Horizontal">
-            <Button Command="{Binding BrowseCommand}">Browse</Button>
-            <Button Command="{Binding AddPushpinCommand}">Add pushpin</Button>
-            <Button Command="{Binding AddPolylineCommand}">Add polyline</Button>
-            <Button Command="{Binding AddPolygonCommand}">Add polygon</Button>
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
+            <RadioButton Command="{Binding BrowseCommand}"
+                         IsChecked="True"
+                         Style="{StaticResource {x:Type ToggleButton}}">
+                Browse
+            </RadioButton>
+            <RadioButton Command="{Binding AddPushpinCommand}" Style="{StaticResource {x:Type ToggleButton}}">Add pushpin</RadioButton>
+            <RadioButton Command="{Binding AddPolylineCommand}" Style="{StaticResource {x:Type ToggleButton}}">Add polyline</RadioButton>
+            <RadioButton Command="{Binding AddPolygonCommand}" Style="{StaticResource {x:Type ToggleButton}}">Add polygon</RadioButton>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <Button Command="{Binding AddCollectionCommand}">Add Collection</Button>
+            <ListBox DisplayMemberPath="Name"
+                     ItemsSource="{Binding Collections}"
+                     SelectedItem="{Binding ActiveCollection}"/>
         </StackPanel>
         <m:Map Grid.Row="1"
                Grid.Column="1"
@@ -88,7 +98,7 @@
                                             PassEventArgsToCommand="True"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <m:MapItemsControl ItemsSource="{Binding Children}"/>
+            <m:MapItemsControl Name="_items" ItemsSource="{Binding ActiveCollection.Geometries}"/>
             <ContentPresenter Content="{Binding ActiveGeometry}"/>
         </m:Map>
     </Grid>

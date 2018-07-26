@@ -17,6 +17,9 @@ namespace MyPlaces.Views
         {
             InitializeComponent();
             Closing += (sender, e) => ViewModelLocator.Cleanup();
+
+            // HACK: Remove this. Fix it right
+            Vm.PropertyChanged += (sender, e) => ((UIElement)((FrameworkElement)_map.Children[0]).Parent).InvalidateMeasure();
         }
 
         MainViewModel Vm
