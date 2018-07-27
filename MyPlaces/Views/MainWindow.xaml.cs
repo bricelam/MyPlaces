@@ -16,9 +16,6 @@ namespace MyPlaces.Views
         {
             InitializeComponent();
             Closing += (sender, e) => ViewModelLocator.Cleanup();
-
-            // HACK: Remove this. Fix it right
-            Vm.PropertyChanged += (sender, e) => ((UIElement)((FrameworkElement)_map.Children[0]).Parent).InvalidateMeasure();
         }
 
         MainViewModel Vm
@@ -33,8 +30,8 @@ namespace MyPlaces.Views
                 return;
 
             var position = e.GetPosition((IInputElement)sender);
-            if (Math.Abs(_mouseDownAt.Value.X - position.X) > 4
-                || Math.Abs(_mouseDownAt.Value.Y - position.Y) > 4)
+            if (Math.Abs(_mouseDownAt.Value.X - position.X) > User32.GetSystemMetrics(User32.SM_CXDOUBLECLK)
+                || Math.Abs(_mouseDownAt.Value.Y - position.Y) > User32.GetSystemMetrics(User32.SM_CYDOUBLECLK))
             {
                 _mouseDownAt = null;
                 _doubleClicking = false;

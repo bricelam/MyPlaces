@@ -8,9 +8,6 @@ namespace MyPlaces.Views
         public const int SM_CYDOUBLECLK = 37;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern int GetDoubleClickTime();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern int GetSystemMetrics(int nIndex);
     }
 }
