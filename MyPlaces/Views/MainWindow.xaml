@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:MyPlaces.Views"
-        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:m="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:nts="clr-namespace:NetTopologySuite.Geometries;assembly=NetTopologySuite"
         Width="1280"
@@ -47,7 +47,7 @@
                      ItemsSource="{Binding Collections}"
                      SelectedItem="{Binding ActiveCollection}"/>
         </StackPanel>
-        <m:Map Grid.Row="1"
+        <m:MapControl Grid.Row="1"
                Grid.Column="1"
                Center="39.828175,-98.5795"
                CredentialsProvider="{Binding BingMapsKey,Converter={StaticResource CredentialsProviderConverter}}"
@@ -59,7 +59,7 @@
                Name="_map"
                ScaleVisibility="Collapsed"
                ZoomLevel="4">
-            <m:Map.Resources>
+            <m:MapControl.Resources>
                 <DataTemplate DataType="{x:Type nts:Point}">
                     <m:Pushpin Location="{Binding Coordinate,Converter={StaticResource LocationConverter}}"/>
                 </DataTemplate>
@@ -76,7 +76,7 @@
                                   Stroke="Green"
                                   StrokeThickness="5"/>
                 </DataTemplate>
-            </m:Map.Resources>
+            </m:MapControl.Resources>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="ViewChangeEnd">
                     <command:EventToCommand Command="{Binding ViewChangeEndCommand}"
@@ -99,7 +99,7 @@
             </i:Interaction.Triggers>
             <m:MapItemsControl ItemsSource="{Binding ActiveCollection.Geometries}"/>
             <ContentPresenter Content="{Binding ActiveGeometry}"/>
-        </m:Map>
+        </m:MapControl>
     </Grid>
 
 </Window>
